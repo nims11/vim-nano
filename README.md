@@ -1,6 +1,6 @@
 # vim-nano
 
-Might nano inside a vim
+Mighty nano inside a vim
 
 # Requirements
 
