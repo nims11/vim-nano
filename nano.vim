@@ -10,7 +10,7 @@ highlight StatusLine ctermfg=black ctermbg=black cterm=NONE
 highlight StatusLineNC ctermfg=black ctermbg=black cterm=NONE
 split
 call feedkeys(":enew\<CR>")
-call feedkeys(":resize 1\<cr>:call termopen('python ~/topbar.py')\<cr>")
+call feedkeys(":resize 1\<cr>:call termopen('python ~/vim-nano/topbar.py')\<cr>")
 
 call feedkeys("\<C-W>j")
 if @% == ""
@@ -20,10 +20,10 @@ split
 call feedkeys("\<C-W>j")
 call feedkeys(":resize 3\<CR>")
 call feedkeys(":enew\<CR>")
-call feedkeys(":call termopen('python ~/botbar.py')\<CR>:echo\<CR>")
+call feedkeys(":call termopen('python ~/vim-nano/botbar.py')\<CR>:echo\<CR>")
 call feedkeys("\<C-W>k")
 
-inoremap jk <esc>
+" inoremap jk <esc>
 inoremap <esc> <nop>
 
 function! ForceExit()
