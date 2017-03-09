@@ -4,7 +4,7 @@ Mighty nano inside a vim
 
 # Requirements
 
-- neovim
+- neovim (termopen abused to replicate nano interface)
 - python (2 or 3, doesn't matter)
 
 # Installation
