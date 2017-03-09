@@ -5,9 +5,15 @@ Mighty nano inside a vim
 # Requirements
 
 - neovim
-- python3
+- python (2 or 3, doesn't matter)
 
 # Installation
-Not yet packaged as a plugin. To run it, just put all the files in your home directory (`nano.vim`, `*.py`) and run `nvim -u ~/nano.vim`
+Not yet packaged as a plugin, because you don't need a vimrc anyway.
 
-![alt tag](https://raw.githubusercontent.com/nims11/vim-nano/master/screenshot.png)
+```
+$ git clone https://github.com/nims11/vim-nano.git
+$ cd vim-nano/
+$ nvim -u nano.vim
+```
+
+![vim-nano in action](https://raw.githubusercontent.com/nims11/vim-nano/master/screenshot.png)

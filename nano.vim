@@ -9,8 +9,10 @@ set shortmess+=I
 highlight StatusLine ctermfg=black ctermbg=black cterm=NONE
 highlight StatusLineNC ctermfg=black ctermbg=black cterm=NONE
 split
+
+let s:path = expand('<sfile>:p:h')
 call feedkeys(":enew\<CR>")
-call feedkeys(":resize 1\<cr>:call termopen('python ~/vim-nano/topbar.py')\<cr>")
+call feedkeys(":resize 1\<cr>:call termopen('python ".s:path."/topbar.py')\<cr>")
 
 call feedkeys("\<C-W>j")
 if @% == ""

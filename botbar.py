@@ -40,9 +40,9 @@ def generate(cols):
         while len(cur_str2) - 8 < elt_width:
             cur_str2 += ' '
         if len(cur_str1) - 8 > elt_width:
-            cur_str1 = cur_str1[:elt_width]
+            cur_str1 = cur_str1[:elt_width+8]
         if len(cur_str2) - 8 > elt_width and k2 != row2[-1][0]:
-            cur_str2 = cur_str2[:elt_width]
+            cur_str2 = cur_str2[:elt_width+8]
         str1 += cur_str1
         str2 += cur_str2
         if len(str1) - cnt >= cols or len(str2) - cnt >= cols:
