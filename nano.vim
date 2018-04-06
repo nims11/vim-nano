@@ -84,7 +84,7 @@ function! OpenFile()
     let name = input('File to insert [from ./]: ')
     if (name == "")
     else
-        call feedkeys(":r ".name."\<CR>")
+        read name
     endif
     echo
 endfunction
