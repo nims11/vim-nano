@@ -8,33 +8,51 @@ highlight EndOfBuffer ctermfg=black ctermbg=black
 set shortmess+=I
 highlight StatusLine ctermfg=black ctermbg=black cterm=NONE
 highlight StatusLineNC ctermfg=black ctermbg=black cterm=NONE
-split
 
-let s:path = expand('<sfile>:p:h')
-call feedkeys(":enew\<CR>")
-call feedkeys(":resize 1\<cr>:call termopen('python ".s:path."/topbar.py')\<cr>")
+function! DrawLayout()
+    " Top bar buffer
+    split
+    let s:path = expand('<sfile>:p:h')
+    enew
+    resize 1
+    call termopen('python '.s:path.'/topbar.py')
 
-call feedkeys("\<C-W>j")
-if @% == ""
-    call feedkeys(":enew\<CR>")
-endif
-split
-call feedkeys("\<C-W>j")
-call feedkeys(":resize 2\<CR>")
-call feedkeys(":enew\<CR>")
-call feedkeys(":call termopen('python ".s:path."/botbar.py')\<CR>:echo\<CR>")
-call feedkeys("\<C-W>k")
+    " File display buffer
+    wincmd j
+    if @% == ""
+        enew
+    endif
 
+    " Bottom bar buffer
+    split
+    wincmd j
+    resize 2
+    enew
+    call termopen('python '.s:path.'/botbar.py')
+
+    " Go back to file display buffer
+    wincmd k
+endfunction
+
+" Trying to draw earlier messes things up
+autocmd VimEnter * call DrawLayout()
+
+
+" Restore input
+function! RestoreInput()
+    startinsert
+    redraw
+endfunction
 
 " Handle resize
 function! Resize()
-    call feedkeys("\<C-\>\<C-n>\<C-W>j")
-    call feedkeys("\<C-\>\<C-n>\:resize 2\<CR>:echo\<CR>")
-    call feedkeys("\<C-\>\<C-n>\<C-W>k")
+    wincmd j
+    resize 2
+    wincmd k
 
-    call feedkeys("\<C-\>\<C-n>\<C-W>k")
-    call feedkeys("\<C-\>\<C-n>\:resize 1\<CR>:echo\<CR>")
-    call feedkeys("\<C-\>\<C-n>\<C-W>j")
+    wincmd k
+    resize 1
+    wincmd j
 endfunction
 
 autocmd VimResized * call Resize()
@@ -66,10 +84,9 @@ function! OpenFile()
     let name = input('File to insert [from ./]: ')
     if (name == "")
     else
-        call feedkeys("\<C-\>\<C-n>:r ".name."\<CR>")
+        call feedkeys(":r ".name."\<CR>")
     endif
     echo
-    call inputrestore()
 endfunction
 
 function! Exit()
@@ -78,7 +95,7 @@ function! Exit()
         let name = confirm('Save modified buffer? (Answering "No" will DISCARD changes.) ', "Yes\nNo\nCancel")
         if (name==3)
             echo
-            call inputrestore()
+            call RestoreInput()
         elseif (name == 2)
             call ForceExit()
         else
@@ -86,7 +103,7 @@ function! Exit()
                 call ForceExit()
             else
                 echo
-                call inputrestore()
+                call RestoreInput()
             endif
         endif
 
@@ -111,7 +128,7 @@ function! SearchFile()
         call feedkeys("\<C-\>\<C-n>/".name."\<CR>")
     endif
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 
 nnoremap <C-F> :call SearchFile()<cr>
@@ -124,7 +141,7 @@ function! ReplaceFile()
         call feedkeys("\<C-\>\<C-n>/".name."\<CR>")
     endif
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 nnoremap <C-F> :call SearchFile()<cr>
 inoremap <C-F> <C-O>:call SearchFile()<cr>
@@ -138,7 +155,7 @@ function! ShowInfo()
     let colperc = 100 * curcol / totalcol
     echo "[ line ". curline . "/". totalline ." (".lineperc."%), col ".curcol. "/".totalcol." (".colperc."%) ]"
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 nnoremap <C-C> :call ShowInfo()<cr>
 inoremap <C-C> <C-O>:call ShowInfo()<cr>
@@ -166,7 +183,7 @@ function! GotoLine()
         call feedkeys("\<C-\>\<C-n>0".c."l")
     endif
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 nnoremap <C-_> :call GotoLine()<cr>
 inoremap <C-_> <C-O>:call GotoLine()<cr>
@@ -174,13 +191,13 @@ inoremap <C-_> <C-O>:call GotoLine()<cr>
 function! PageUp()
     call feedkeys("\<C-\>\<C-n>\<PageUp>")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 
 function! PageDown()
     call feedkeys("\<C-\>\<C-n>\<PageDown>")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 
 nnoremap <C-Y> :call PageUp()<cr>
@@ -192,13 +209,13 @@ inoremap <C-V> <C-O>:call PageDown()<cr>
 function! FirstLine()
     call feedkeys("\<C-\>\<C-n>gg")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 
 function! LastLine()
     call feedkeys("\<C-\>\<C-n>G")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 
 nnoremap <A-\> :call FirstLine()<cr>
@@ -210,7 +227,7 @@ inoremap <A-/> <C-O>:call LastLine()<cr>
 function! NextSearch()
     call feedkeys("\<C-\>\<C-n>n")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 inoremap <A-f> <C-O>n
 
@@ -220,7 +237,7 @@ inoremap <A-]> <C-O>%
 function! VisualMode()
     call feedkeys("\<C-\>\<C-n>v")
     echo
-    call inputrestore()
+    call RestoreInput()
 endfunction
 nnoremap <C-^> :call VisualMode()<cr>
 inoremap <C-^> <C-O>:call VisualMode()<cr>
