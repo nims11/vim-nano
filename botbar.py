@@ -52,9 +52,12 @@ def generate(cols):
 
     return str1 +'\n'+ str2+'\n'
 
+prev_cols = -1
 while True:
     _, cols = os.popen('stty size', 'r').read().split()
     cols = int(cols) - 4
-    sys.stdout.write(generate(cols))
-    sys.stdout.flush()
-    time.sleep(0.3)
+    if cols != prev_cols:
+        sys.stdout.write(generate(cols))
+        sys.stdout.flush()
+        prev_cols = cols
+        time.sleep(0.3)
