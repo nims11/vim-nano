@@ -3,11 +3,13 @@ set noshowmode
 set noruler
 set laststatus=0
 set noshowcmd
+set hlsearch!
 
 highlight EndOfBuffer ctermfg=black ctermbg=black
 set shortmess+=I
 highlight StatusLine ctermfg=black ctermbg=black cterm=NONE
 highlight StatusLineNC ctermfg=black ctermbg=black cterm=NONE
+
 
 function! DrawLayout()
     " Top bar buffer
@@ -44,6 +46,7 @@ function! RestoreInput()
     redraw
 endfunction
 
+
 " Handle resize
 function! Resize()
     wincmd j
@@ -58,52 +61,56 @@ endfunction
 autocmd VimResized * call Resize()
 
 
-" inoremap jk <esc>
-inoremap <esc> <nop>
+" Disable command key
+inoremap <silent> <esc> <nop>
+
 
 function! ForceExit()
-    call feedkeys("\<C-\>\<C-n>:qa!\<CR>")
+    qa!
 endfunction
+
 
 function! PromptSave()
     if @% != ""
         write
         return 1
     endif
-    let name = input('File Name to Write: ')
-    echo
-    if (name == "")
+    let l:name = input('File Name to Write: ')
+    if (l:name == "")
         return 0
     else
-        call feedkeys("\<C-\>\<C-n>:w! ".name."\<CR>")
+        execute "write! ".l:name
         return 1
     endif
 endfunction
+" Save file
+nnoremap <C-O> :call PromptSave()<cr>
+inoremap <silent> <C-O> <C-O>:call PromptSave()<cr>
+
 
 function! OpenFile()
-    let name = input('File to insert [from ./]: ')
-    if (name == "")
+    let l:name = input('File to insert [from ./]: ')
+    if (l:name == "")
     else
-        read name
+        execute "read ".l:name
     endif
-    echo
 endfunction
+" Read file
+nnoremap <C-R> :call OpenFile()<cr>
+inoremap <silent> <C-R> <C-O>:call OpenFile()<cr>
+ 
 
 function! Exit()
     if &mod
         call inputsave()
         let name = confirm('Save modified buffer? (Answering "No" will DISCARD changes.) ', "Yes\nNo\nCancel")
         if (name==3)
-            echo
-            call RestoreInput()
         elseif (name == 2)
             call ForceExit()
         else
             if PromptSave() == 1
                 call ForceExit()
             else
-                echo
-                call RestoreInput()
             endif
         endif
 
@@ -111,40 +118,22 @@ function! Exit()
         call ForceExit()
     endif
 endfunction
-
+" Exit app
 nnoremap <C-X> :call Exit()<cr>
-inoremap <C-X> <C-O>:call Exit()<cr>
+inoremap <silent> <C-X> <C-O>:call Exit()<cr>
 
-nnoremap <C-O> :call PromptSave()<cr>
-inoremap <C-O> <C-O>:call PromptSave()<cr>
 
-nnoremap <C-R> :call OpenFile()<cr>
-inoremap <C-R> <C-O>:call OpenFile()<cr>
- 
 function! SearchFile()
-    let name = input('Search: ')
+    let l:name = input('Search: ')
     if (name == "")
     else
-        call feedkeys("\<C-\>\<C-n>/".name."\<CR>")
+        call feedkeys("\<C-\>\<C-o>/".name."\<CR>")
     endif
-    echo
-    call RestoreInput()
 endfunction
-
+" Search file
 nnoremap <C-F> :call SearchFile()<cr>
-inoremap <C-F> <C-O>:call SearchFile()<cr>
+inoremap <silent> <C-F> <C-O>:call SearchFile()<cr>
 
-function! ReplaceFile()
-    let name = input('Search: ')
-    if (name == "")
-    else
-        call feedkeys("\<C-\>\<C-n>/".name."\<CR>")
-    endif
-    echo
-    call RestoreInput()
-endfunction
-nnoremap <C-F> :call SearchFile()<cr>
-inoremap <C-F> <C-O>:call SearchFile()<cr>
 
 function! ShowInfo()
     let curline = line('.')
@@ -154,11 +143,10 @@ function! ShowInfo()
     let lineperc = 100 * curline / totalline
     let colperc = 100 * curcol / totalcol
     echo "[ line ". curline . "/". totalline ." (".lineperc."%), col ".curcol. "/".totalcol." (".colperc."%) ]"
-    echo
-    call RestoreInput()
 endfunction
+" Show cursor info
 nnoremap <C-C> :call ShowInfo()<cr>
-inoremap <C-C> <C-O>:call ShowInfo()<cr>
+inoremap <silent> <C-C> <C-O>:call ShowInfo()<cr>
 
 
 function! GotoLine()
@@ -179,81 +167,77 @@ function! GotoLine()
             endif
             let cnt += 1
         endfor
-        call feedkeys("\<C-\>\<C-n>".r."G")
-        call feedkeys("\<C-\>\<C-n>0".c."l")
+        call cursor(r, c)
     endif
-    echo
-    call RestoreInput()
 endfunction
+" Goto line, col
 nnoremap <C-_> :call GotoLine()<cr>
-inoremap <C-_> <C-O>:call GotoLine()<cr>
+inoremap <silent> <C-_> <C-O>:call GotoLine()<cr>
 
-function! PageUp()
-    call feedkeys("\<C-\>\<C-n>\<PageUp>")
-    echo
-    call RestoreInput()
-endfunction
 
-function! PageDown()
-    call feedkeys("\<C-\>\<C-n>\<PageDown>")
-    echo
-    call RestoreInput()
-endfunction
+" Page up
+nnoremap <C-Y> <PageUp>
+inoremap <silent> <C-Y> <PageUp>
 
-nnoremap <C-Y> :call PageUp()<cr>
-inoremap <C-Y> <C-O>:call PageUp()<cr>
 
-nnoremap <C-V> :call PageDown()<cr>
-inoremap <C-V> <C-O>:call PageDown()<cr>
+" Page down
+nnoremap <C-V> <PageDown>
+inoremap <silent> <C-V> <PageDown>
+
 
 function! FirstLine()
-    call feedkeys("\<C-\>\<C-n>gg")
-    echo
-    call RestoreInput()
+    call feedkeys("\<C-\>\<C-o>gg")
 endfunction
 
 function! LastLine()
-    call feedkeys("\<C-\>\<C-n>G")
-    echo
-    call RestoreInput()
+    call feedkeys("\<C-\>\<C-o>G")
 endfunction
-
+" First Line
 nnoremap <A-\> :call FirstLine()<cr>
-inoremap <A-\> <C-O>:call FirstLine()<cr>
-
+inoremap <silent> <A-\> <C-O>:call FirstLine()<cr>
+" Last Line
 nnoremap <A-/> :call LastLine()<cr>
-inoremap <A-/> <C-O>:call LastLine()<cr>
+inoremap <silent> <A-/> <C-O>:call LastLine()<cr>
 
-function! NextSearch()
-    call feedkeys("\<C-\>\<C-n>n")
-    echo
-    call RestoreInput()
-endfunction
-inoremap <A-f> <C-O>n
 
-inoremap <A-]> <C-O>%
+" Search forward
+inoremap <silent> <A-f> <C-O>n
+
+
+" Match parenthesis
+inoremap <silent> <A-]> <C-O>%
 
 
 function! VisualMode()
-    call feedkeys("\<C-\>\<C-n>v")
-    echo
-    call RestoreInput()
+    call feedkeys("\<C-\>\<C-o>v")
 endfunction
+" Mark Text
 nnoremap <C-^> :call VisualMode()<cr>
-inoremap <C-^> <C-O>:call VisualMode()<cr>
+inoremap <silent> <C-^> <C-O>:call VisualMode()<cr>
 
-vnoremap <A-c> y<cr>
 
-inoremap <A-}> <C-O>>>
-inoremap <A-{> <C-O><<
+" Copy Text
+vnoremap <A-c> y
 
-inoremap <C-J> <C-O>gqk
-call feedkeys('i')
 
-set hlsearch!
+" Indent
+inoremap <silent> <A-}> <C-O>>>
+inoremap <silent> <A-{> <C-O><<
 
-inoremap <C-L> <C-o>l
-inoremap <C-k> <C-o>h
 
-inoremap <C-q> <C-o>b
-inoremap <C-e> <C-o>w
+" Justify
+inoremap <silent> <C-J> <C-O>gqk
+
+
+" Col nav
+inoremap <silent> <C-L> <C-o>l
+inoremap <silent> <C-k> <C-o>h
+
+
+" Word nav
+inoremap <silent> <C-q> <C-o>b
+inoremap <silent> <C-e> <C-o>w
+
+
+" Start insert mode
+startinsert
