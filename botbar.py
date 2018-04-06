@@ -60,4 +60,4 @@ while True:
         sys.stdout.write(generate(cols))
         sys.stdout.flush()
         prev_cols = cols
-        time.sleep(0.3)
+    time.sleep(0.3)
