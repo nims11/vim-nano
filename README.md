@@ -1,6 +1,6 @@
 # vim-nano
 
-Mighty nano inside a vim
+Mighty nano inside a vim. I wrote this for a parody hackathon.
 
 # Requirements
 
