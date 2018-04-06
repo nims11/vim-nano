@@ -20,9 +20,9 @@ if @% == ""
 endif
 split
 call feedkeys("\<C-W>j")
-call feedkeys(":resize 3\<CR>")
+call feedkeys(":resize 2\<CR>")
 call feedkeys(":enew\<CR>")
-call feedkeys(":call termopen('python ~/vim-nano/botbar.py')\<CR>:echo\<CR>")
+call feedkeys(":call termopen('python ".s:path."/botbar.py')\<CR>:echo\<CR>")
 call feedkeys("\<C-W>k")
 
 " inoremap jk <esc>
