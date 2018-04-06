@@ -25,6 +25,21 @@ call feedkeys(":enew\<CR>")
 call feedkeys(":call termopen('python ".s:path."/botbar.py')\<CR>:echo\<CR>")
 call feedkeys("\<C-W>k")
 
+
+" Handle resize
+function! Resize()
+    call feedkeys("\<C-\>\<C-n>\<C-W>j")
+    call feedkeys("\<C-\>\<C-n>\:resize 2\<CR>:echo\<CR>")
+    call feedkeys("\<C-\>\<C-n>\<C-W>k")
+
+    call feedkeys("\<C-\>\<C-n>\<C-W>k")
+    call feedkeys("\<C-\>\<C-n>\:resize 1\<CR>:echo\<CR>")
+    call feedkeys("\<C-\>\<C-n>\<C-W>j")
+endfunction
+
+autocmd VimResized * call Resize()
+
+
 " inoremap jk <esc>
 inoremap <esc> <nop>
 
