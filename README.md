@@ -1,19 +1,13 @@
 # vim-nano
 
-Mighty nano inside a vim. I wrote this for a parody hackathon.
+Is an abomination and thinking about it makes you lose brain cells.
 
 # Requirements
 
-- neovim (termopen abused to replicate nano interface)
-- python (2 or 3, doesn't matter)
+- Rethink your life
+- Therapy
 
 # Installation
-Not yet packaged as a plugin, because you don't need a vimrc anyway.
+Don't do it.
 
-```
-$ git clone https://github.com/nims11/vim-nano.git
-$ cd vim-nano/
-$ nvim -u nano.vim
-```
-
-![vim-nano in action](https://raw.githubusercontent.com/nims11/vim-nano/master/screenshot.png)
+![regular vim in action](https://cdn-images-1.medium.com/max/2000/1*f2dGSYzu7HjZr8rxPfFTtg.png)
