@@ -1,3 +1,4 @@
+set nocompatible
 let s:hidden_all = 1
 set noshowmode
 set noruler
@@ -5,10 +6,14 @@ set laststatus=0
 set noshowcmd
 set hlsearch!
 
-highlight EndOfBuffer ctermfg=black ctermbg=black
+highlight EndOfBuffer ctermfg=0
 set shortmess+=I
-highlight StatusLine ctermfg=black ctermbg=black cterm=NONE
-highlight StatusLineNC ctermfg=black ctermbg=black cterm=NONE
+highlight StatusLine ctermfg=0 ctermbg=0 cterm=NONE
+highlight StatusLineNC ctermfg=0 ctermbg=0 cterm=NONE
+
+" Vim8 Specific
+highlight StatusLineTerm ctermfg=0 ctermbg=0 cterm=NONE
+highlight StatusLineTermNC ctermfg=0 ctermbg=0 cterm=NONE
 
 
 function! DrawLayout()
@@ -17,7 +22,11 @@ function! DrawLayout()
     let s:path = expand('<sfile>:p:h')
     enew
     resize 1
-    call termopen('python '.s:path.'/topbar.py')
+    if has('nvim')
+        call termopen('python '.s:path.'/topbar.py')
+    else
+        terminal ++curwin python ./topbar.py
+    endif
 
     " File display buffer
     wincmd j
@@ -28,29 +37,36 @@ function! DrawLayout()
     " Bottom bar buffer
     split
     wincmd j
-    resize 2
+    if has('nvim')
+        resize 2
+    else
+        resize 3
+    endif
     enew
-    call termopen('python '.s:path.'/botbar.py')
+    if has('nvim')
+        call termopen('python '.s:path.'/botbar.py')
+    else
+        terminal ++curwin python ./botbar.py
+    endif
 
     " Go back to file display buffer
     wincmd k
 endfunction
 
+set statusline=%#Normal#
+
 " Trying to draw earlier messes things up
 autocmd VimEnter * call DrawLayout()
-
-
-" Restore input
-function! RestoreInput()
-    startinsert
-    redraw
-endfunction
 
 
 " Handle resize
 function! Resize()
     wincmd j
-    resize 2
+    if has('nvim')
+        resize 2
+    else
+        resize 3
+    endif
     wincmd k
 
     wincmd k
@@ -63,6 +79,11 @@ autocmd VimResized * call Resize()
 
 " Disable command key
 inoremap <silent> <esc> <nop>
+" Hack to make arrow keys work with vim8
+if has('nvim')
+else
+    inoremap <esc>x <esc>x
+endif
 
 
 function! ForceExit()
