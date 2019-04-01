@@ -1,8 +1,17 @@
 # vim-nano
 
-Mighty nano inside a vim. I initially wrote this for a parody hackathon, and now
-I just want to see how far I can go with this. Many nano features yet to be
-implemented, including the brand new nano 4.0 goodness!
+Mighty nano inside a vim.
+
+I initially wrote this for a parody hackathon, and now
+I just want to see how far I can go with this.
+
+[vim8 support blog post](https://nims11.github.io/blog/vim-nano)
+
+# Features
+
+- Looks like GNU nano
+- Various nano shortcuts/features
+- No Normal/Insert mode
 
 # Requirements
 
