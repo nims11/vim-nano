@@ -15,6 +15,8 @@ highlight StatusLineNC ctermfg=0 ctermbg=0 cterm=NONE
 highlight StatusLineTerm ctermfg=0 ctermbg=0 cterm=NONE
 highlight StatusLineTermNC ctermfg=0 ctermbg=0 cterm=NONE
 
+let g:neoterm_autoscroll = 1
+
 
 function! DrawLayout()
     " Top bar buffer
@@ -37,14 +39,11 @@ function! DrawLayout()
     " Bottom bar buffer
     split
     wincmd j
-    if has('nvim')
-        resize 2
-    else
-        resize 3
-    endif
+    resize 3
     enew
     if has('nvim')
         call termopen('python '.s:path.'/botbar.py')
+        execute "$"
     else
         terminal ++curwin python ./botbar.py
     endif
@@ -62,11 +61,7 @@ autocmd VimEnter * call DrawLayout()
 " Handle resize
 function! Resize()
     wincmd j
-    if has('nvim')
-        resize 2
-    else
-        resize 3
-    endif
+    resize 3
     wincmd k
 
     wincmd k

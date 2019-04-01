@@ -50,10 +50,11 @@ def generate(cols):
             str2 = str2[:cols+cnt]
             return str1 +'\n'+ str2 + '\n'
 
-    return str1 +'\n'+ str2+'\n'
+    return '\n' + str1 +'\n'+ str2
 
 prev_cols = -1
 while True:
+    # os.system('reset')
     _, cols = os.popen('stty size', 'r').read().split()
     cols = int(cols) - 4
     if cols != prev_cols:
